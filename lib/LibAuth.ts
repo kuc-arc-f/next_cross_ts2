@@ -1,7 +1,40 @@
 // LibAuth
+import LibCookie from '../lib/LibCookie'
 //
 //export default  {
 const LibAuth = {
+  valid_login: function(props){
+    try{
+      let ret = true
+      const key = process.env.COOKIE_KEY_USER_ID
+      const user_id = LibCookie.get_cookie(key)
+//console.log(user_id)
+      if(user_id == null){
+        props.history.push("/login");
+        ret = false
+      }      
+      return ret
+    } catch (e) {
+      console.log(e);
+      throw new Error('error, valid_login');
+    }
+  },
+  get_uid: function(){
+    try{
+      let ret = ""
+//      const key = process.env.REACT_APP_COOKIE_USER_ID
+      const key = process.env.COOKIE_KEY_USER_ID
+      const user_id = LibCookie.get_cookie(key)
+//console.log(user_id)
+      if(user_id !== null){
+        ret = user_id
+      }      
+      return ret
+    } catch (e) {
+      console.log(e);
+      throw new Error('error, get_uid');
+    }
+  },      
   get_user: function(mail , users){
     try{
       let ret = null

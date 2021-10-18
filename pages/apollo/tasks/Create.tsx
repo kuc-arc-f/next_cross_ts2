@@ -16,13 +16,6 @@ class TaskCreate extends React.Component<IProps> {
     this.state = { user_id: 0 };
   }
   async componentDidMount(){
-    /*
-    const valid = LibAuth.valid_login(this.props)
-    if(valid){
-      const uid = LibAuth.get_uid()
-      this.setState({user_id: uid })
-    }    
-    */
   }
   async clickHandler(){
     try {
@@ -34,8 +27,6 @@ class TaskCreate extends React.Component<IProps> {
       }
       const result = await LibContent.add_item("tasks", values, "")
 console.log(result)
-//      var flash = {success:"Conmplete, save", error:""}
-//      await LibFlash.set_flash( this.state.user_id , flash)
       alert("Complete, save");
       location.href = '/apollo/tasks';
     } catch (error) {

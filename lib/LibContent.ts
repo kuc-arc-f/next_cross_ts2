@@ -5,7 +5,7 @@ import LibApiFind from '../lib/LibApiFind';
 const LibContent = {
   get_items: async function(content_name){
     try {
-      const site_id= process.env.REACT_APP_SITE_ID;
+      const site_id= process.env.MY_SITE_ID;
       const data = await client.query({
         query: Content.get_query_contents(site_id , content_name) ,
         fetchPolicy: "network-only"
@@ -19,7 +19,7 @@ const LibContent = {
   },
   get_items_uid: async function(content_name, user_id){
     try {
-      const site_id= process.env.REACT_APP_SITE_ID;
+      const site_id= process.env.MY_SITE_ID;
       const data = await client.query({
         query: Content.get_query_contents_uid(site_id , content_name, user_id) ,
         fetchPolicy: "network-only"
