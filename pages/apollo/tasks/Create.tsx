@@ -1,7 +1,7 @@
 import React  from 'react';
 //import { Link } from 'react-router-dom';
 //import LibFlash from '../../../lib/LibFlash';
-//import LibAuth from '../../../lib/LibAuth';
+import LibAuth from '../../../lib/LibAuth';
 import LibContent from '../../../lib/LibContent';
 import Layout from '../../../components/layout'
 
@@ -10,23 +10,35 @@ interface IProps {
   csrf: any,
   apikey: string,
 }
-class TaskCreate extends React.Component<IProps> {
+interface IState {
+  user_id: string,
+}
+class TaskCreate extends React.Component<IProps, IState> {
   constructor(props) {
     super(props);
-    this.state = { user_id: 0 };
+    this.state = { user_id: "" };
   }
   async componentDidMount(){
+    const valid = LibAuth.valid_login(this.props)
+    if(valid){
+      const uid = LibAuth.get_uid()
+      this.setState({user_id: uid });
+console.log(uid);
+    }    
   }
   async clickHandler(){
     try {
+//console.log(this.state.user_id);
       const title = document.querySelector<HTMLInputElement>('#title');
       const content = document.querySelector<HTMLInputElement>('#content');
       const values = {
         "title": title.value,
         "content": content.value,
       }
-      const result = await LibContent.add_item("tasks", values, "")
+      const result = await LibContent.add_item("tasks", values, this.state.user_id)
 console.log(result)
+//      var flash = {success:"Conmplete, save", error:""}
+//      await LibFlash.set_flash( this.state.user_id , flash)
       alert("Complete, save");
       location.href = '/apollo/tasks';
     } catch (error) {

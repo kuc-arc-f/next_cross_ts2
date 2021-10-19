@@ -2,57 +2,54 @@ import React  from 'react';
 import Link from 'next/link';
 import { gql } from "@apollo/client";
 import Layout from '../../../components/layout'
+import IndexRow from './IndexRow';
 import client from '../../../apollo-client'
 import LibCookie from '../../../lib/LibCookie'
-//import LibContent from '../../../lib/LibContent';
+import LibContent from '../../../lib/LibContent';
+import LibAuth from '../../../lib/LibAuth';
 import LibApiFind from '../../../lib/LibApiFind';
-import IndexRow from './IndexRow';
 
 interface IProps {
   items: Array<object>,
   history:string[],
+}
+interface IState {
+//  items: Array<any>,
+  items: any[],
 }
 interface IObject {
   id: number,
   title: string
 }
 //
-class TasksIndex extends React.Component<IProps> {
+class NotesIndex extends React.Component<IProps, IState> {
   static async getInitialProps(ctx) {
-    const site_id = process.env.MY_SITE_ID;
-    const data = await client.query({
-      query: gql`
-      query {
-        contents(site_id: "${site_id}" , content_name:"notes") {
-          id
-          name
-          values
-          user_id
-          created_at
-        }
-      }      
-      `,
-      fetchPolicy: "network-only"
-    });
-    const items = LibApiFind.convert_items(data.data.contents)
-//console.log(data.data);  
 //console.log(items);  
     return {
-      items: items,
+      items: [],
     }
   }
   constructor(props){
     super(props)
+    this.state = { items: [] };
 //console.log(props);   
   }       
   async componentDidMount(){
     const key = process.env.COOKIE_KEY_USER_ID;
     if(LibCookie.get_cookie(key) === null){
       location.href = '/login';
-    }    
+    }
+    const valid = LibAuth.valid_login(this.props)
+    if(valid){
+      const uid = LibAuth.get_uid()
+console.log("uid=", uid);
+      const items = await LibContent.get_items_uid("notes", uid)
+      this.setState({items: items })      
+//console.log(d);
+    }  
   }
   render() {
-    const data = this.props.items;
+    const data = this.state.items;
 //console.log(data);
     return (
     <Layout>
@@ -73,4 +70,4 @@ class TasksIndex extends React.Component<IProps> {
     );
   }
 }
-export default TasksIndex;
+export default NotesIndex;

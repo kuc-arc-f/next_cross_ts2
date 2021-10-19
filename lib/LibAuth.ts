@@ -10,7 +10,7 @@ const LibAuth = {
       const user_id = LibCookie.get_cookie(key)
 //console.log(user_id)
       if(user_id == null){
-        props.history.push("/login");
+        location.href ="/login";
         ret = false
       }      
       return ret

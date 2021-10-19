@@ -1,4 +1,5 @@
 import React  from 'react';
+import moment from 'moment';
 //import LibFlash from '../../../lib/LibFlash';
 import LibAuth from '../../../lib/LibAuth';
 import LibContent from '../../../lib/LibContent';
@@ -28,15 +29,18 @@ class NoteCreate extends React.Component<IProps, IState> {
     const valid = LibAuth.valid_login(this.props)
     if(valid){
       const uid = LibAuth.get_uid()
-//console.log(uid);
+console.log("uid=", uid);
       const categoryItems = await LibContent.get_items("categoryItems");
       const tagItems = await LibContent.get_items("tagItems");
       const radioItems = await LibContent.get_items("radioItems");
-console.log(radioItems);
+//console.log(radioItems);
       this.setState({
         user_id: uid ,categoryItems: categoryItems, tagItems: tagItems,
         radioItems: radioItems,
       })
+      const dt = moment().format('YYYY-MM-DD');
+      const pub_date = document.querySelector<HTMLInputElement>('#pub_date');
+      pub_date.value= dt;      
     }
   }
   async clickHandler(){
@@ -44,6 +48,7 @@ console.log(radioItems);
       const title = document.querySelector<HTMLInputElement>('#title');
       const content = document.querySelector<HTMLInputElement>('#content');
       const category = document.querySelector<HTMLInputElement>('#category');
+      const pub_date = document.querySelector<HTMLInputElement>('#pub_date');
       const arrChecked = [] 
       const check_items = this.state.tagItems;  
       check_items.forEach(function(item, index){
@@ -60,10 +65,12 @@ console.log(arrChecked)
         content: content.value,
         category: category.value,
         radio_1: this.state.radio_1,
+        pub_date: pub_date.value,
       }
-console.log(values);      
+//console.log(values);      
+//console.log("user_id=", this.state.user_id);      
       let noteId = "";
-      const result = await LibContent.add_item("notes", values, "")
+      const result = await LibContent.add_item("notes", values, this.state.user_id)
       if(result.data.addContent.id !== 'undefined'){
         noteId = result.data.addContent.id;
 console.log("noteId=", noteId);
@@ -85,7 +92,7 @@ console.log(item);
   checkRow(){
     const check_items = this.state.tagItems;
     return check_items.map((item: any, index: number) => {
-console.log(item.values.name );
+// console.log(item.values.name );
       let name = "check_" + index;
       return(
         <label key={index}>
@@ -120,6 +127,14 @@ console.log(this.state.tagItems);
           }
           </select>
         </div>
+        <hr />
+        <div className="form-group">
+          <label>Date:</label>
+          <div className="col-sm-6">
+            <input type="date" name="pub_date" id="pub_date" className="form-control" 
+            />
+          </div>
+        </div>        
         <hr />
         <label>RadioType:</label><br />
         {this.state.radioItems.map((item ,index) => {

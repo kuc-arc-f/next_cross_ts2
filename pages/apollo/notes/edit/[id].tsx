@@ -12,7 +12,8 @@ interface IState {
   categoryItems: Array<any>,
   tagItems: Array<any>,
   radioItems: Array<any>,
-  radio_1: string,  
+  radio_1: string,
+  pub_date: string,  
 }
 interface IProps {
   history: string[],
@@ -42,6 +43,7 @@ console.log(props);
       title: props.item.values.title,
       content: props.item.values.content,
       radio_1: props.item.values.radio_1,
+      pub_date: props.item.values.pub_date,
       categoryItems: [], tagItems: [],
       radioItems: [],
     };
@@ -50,19 +52,22 @@ console.log(props);
     const categoryItems = await LibContent.get_items("categoryItems");
     const tagItems = await LibContent.get_items("tagItems");
     const radioItems = await LibContent.get_items("radioItems");
-console.log(radioItems);    
-//console.log(this.props.item.values.category)
+//console.log(radioItems);    
+console.log(this.props.item.values)
     this.setState({
       categoryItems: categoryItems, tagItems: tagItems, radioItems: radioItems 
     });
     const category = document.querySelector<HTMLInputElement>('#category');
     category.value = this.props.item.values.category;
+    const pub_date = document.querySelector<HTMLInputElement>('#pub_date');
+    pub_date.value= this.props.item.values.pub_date;    
   }
   async clickHandler(){
     try {
       const title = document.querySelector<HTMLInputElement>('#title');
       const content = document.querySelector<HTMLInputElement>('#content');
       const category = document.querySelector<HTMLInputElement>('#category');
+      const pub_date = document.querySelector<HTMLInputElement>('#pub_date');
       const arrChecked = [] 
       const check_items = this.state.tagItems;  
       check_items.forEach(function(item, index){
@@ -79,6 +84,7 @@ console.log(item.values.name)
         content: content.value,
         category: category.value,
         radio_1: this.state.radio_1,
+        pub_date: pub_date.value,
       }
       const result =await LibContent.update_item(this.state.id, "notes", values)
 console.log(result.data.updateContent.id);
@@ -159,6 +165,14 @@ console.log(result)
           ))
           }
         </select>
+        <hr />
+        <div className="form-group">
+          <label>Date:</label>
+          <div className="col-sm-6">
+            <input type="date" name="pub_date" id="pub_date" className="form-control" 
+            />
+          </div>
+        </div>        
         <hr />
         <label>RadioType:</label><br />
         {this.state.radioItems.map((item ,index) => {

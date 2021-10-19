@@ -77,7 +77,8 @@ console.log(this.props)
         console.log(json )
         if(parseInt(json.ret) === 1){
           console.log("OK, post_item")
-          LibCookie.set_cookie("user_id", json.user._id) 
+          const key = process.env.COOKIE_KEY_USER_ID;
+          LibCookie.set_cookie(key, json.user._id) 
           alert("Success, Login")  
           flash.set({ messages_success: 'Success Login, welcome!! ' })        
           Router.push('/');
